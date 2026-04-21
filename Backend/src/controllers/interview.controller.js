@@ -10,18 +10,23 @@ const interviewReportModel = require("../models/interviewReport.model")
  */
 async function generateInterViewReportController(req, res) {
     try {
+        console.log("📥 Interview report generation request received")
         let resumeText = ""
         if (req.file) {
+            console.log("📄 Processing resume file...")
             const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
             resumeText = resumeContent.text
+            console.log("✅ Resume processed successfully")
         }
         const { selfDescription, jobDescription } = req.body
 
+        console.log("🤖 Calling AI service to generate interview report...")
         const interViewReportByAi = await generateInterviewReport({
             resume: resumeText,
             selfDescription,
             jobDescription
         })
+        console.log("✅ AI report generated, saving to database...")
 
         const interviewReport = await interviewReportModel.create({
             user: req.user.id,
@@ -31,14 +36,16 @@ async function generateInterViewReportController(req, res) {
             ...interViewReportByAi
         })
 
+        console.log("✅ Interview report saved to database")
         res.status(201).json({
             message: "Interview report generated successfully.",
             interviewReport
         })
     } catch (error) {
-        console.error("Error generating interview report:", error)
+        console.error("❌ Error generating interview report:", error.message)
+        console.error("Full error:", error)
         res.status(500).json({
-            message: "Failed to generate interview report. Please check your API key and try again."
+            message: "Failed to generate interview report. " + error.message || "Please check your API key and try again."
         })
     }
 }

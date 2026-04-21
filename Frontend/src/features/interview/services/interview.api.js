@@ -16,13 +16,19 @@ export const generateInterviewReport = async ({ jobDescription, selfDescription,
     formData.append("selfDescription", selfDescription)
     formData.append("resume", resumeFile)
 
-    const response = await api.post("/api/interview/", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    })
-
-    return response.data
+    try {
+        console.log("📤 Sending interview report request to API...")
+        const response = await api.post("/api/interview/", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
+        console.log("✅ API Response received:", response.data)
+        return response.data
+    } catch (error) {
+        console.error("❌ API Error:", error.response?.data || error.message)
+        throw error
+    }
 
 }
 

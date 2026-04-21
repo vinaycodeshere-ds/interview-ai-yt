@@ -34,24 +34,33 @@ const interviewReportSchema = z.object({
 
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
 
-
+    console.log("🚀 Starting interview report generation...")
+    
     const prompt = `Generate an interview report for a candidate with the following details:
                         Resume: ${resume}
                         Self Description: ${selfDescription}
                         Job Description: ${jobDescription}
 `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(interviewReportSchema),
-        }
-    })
+    try {
+        console.log("📡 Sending request to Google GenAI API...")
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: zodToJsonSchema(interviewReportSchema),
+            }
+        })
 
-    return JSON.parse(response.text)
-
+        console.log("✅ Response received from API")
+        const parsedResponse = JSON.parse(response.text)
+        console.log("✅ Interview report generated successfully")
+        return parsedResponse
+    } catch (error) {
+        console.error("❌ Error in generateInterviewReport:", error.message)
+        throw new Error(`AI API Error: ${error.message}`)
+    }
 
 }
 
