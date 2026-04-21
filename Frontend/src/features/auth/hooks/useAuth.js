@@ -13,10 +13,21 @@ export const useAuth = () => {
     const handleLogin = async ({ email, password }) => {
         setLoading(true)
         try {
+            console.log('useAuth: Calling login API')
             const data = await login({ email, password })
-            setUser(data.user)
+            console.log('useAuth: Login API returned:', data)
+            if (data && data.user) {
+                console.log('useAuth: Setting user:', data.user)
+                setUser(data.user)
+                console.log('useAuth: Login successful')
+                return true
+            } else {
+                console.error('useAuth: No user data in response')
+                return false
+            }
         } catch (err) {
-
+            console.error('useAuth: Login failed:', err.message)
+            return false
         } finally {
             setLoading(false)
         }
@@ -50,17 +61,18 @@ export const useAuth = () => {
 
         const getAndSetUser = async () => {
             try {
-
                 const data = await getMe()
                 setUser(data.user)
-            } catch (err) { } finally {
+            } catch (err) {
+                setUser(null)
+            } finally {
                 setLoading(false)
             }
         }
 
         getAndSetUser()
 
-    }, [])
+    }, []) // Empty dependency array is correct
 
     return { user, loading, handleRegister, handleLogin, handleLogout }
 }

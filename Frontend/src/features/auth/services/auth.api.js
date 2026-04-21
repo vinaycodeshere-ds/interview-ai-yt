@@ -1,4 +1,4 @@
-import axios from "axios"
+﻿import axios from "axios"
 
 
 const api = axios.create({
@@ -18,6 +18,7 @@ export async function register({ username, email, password }) {
     } catch (err) {
 
         console.log(err)
+        throw err
 
     }
 
@@ -26,15 +27,18 @@ export async function register({ username, email, password }) {
 export async function login({ email, password }) {
 
     try {
-
+        console.log('Attempting login with:', { email })
         const response = await api.post("/api/auth/login", {
             email, password
         })
 
+        console.log('Login response:', response.data)
         return response.data
 
     } catch (err) {
-        console.log(err)
+        console.error('Login error response:', err.response?.data || err.message)
+        console.error('Full error:', err)
+        throw err
     }
 
 }
@@ -47,7 +51,7 @@ export async function logout() {
         return response.data
 
     } catch (err) {
-
+        throw err
     }
 }
 
@@ -61,6 +65,7 @@ export async function getMe() {
 
     } catch (err) {
         console.log(err)
+        throw err
     }
 
 }

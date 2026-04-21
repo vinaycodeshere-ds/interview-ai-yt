@@ -27,13 +27,52 @@ main{
 
         gap: 0.5rem;
 
-
         input{
             border: none;
             outline: none;
             padding-inline: 1rem;
             padding-block: 0.75rem;
             border-radius: 0.75rem;
+        }
+
+        .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+
+            input {
+                flex: 1;
+                padding-right: 3rem; // Make room for the button
+            }
+
+            .password-toggle-btn {
+                position: absolute;
+                right: 0.75rem;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.25rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #666;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #333;
+                }
+
+                &:focus {
+                    outline: 2px solid #e1034d;
+                    outline-offset: 2px;
+                    border-radius: 0.25rem;
+                }
+
+                svg {
+                    width: 1.25rem;
+                    height: 1.25rem;
+                }
+            }
         }
     }
 
